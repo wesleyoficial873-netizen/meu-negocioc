@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wesley Henrique — Tecnologia & Design</title>
+<meta name="google-site-verification" content="_mh5pUKp_baIVe99nBEu0XbpcwmZXe1lwyHf1VwJjKM" />
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#050508; --surface:#0d0d14; --card:#12121e;
+    --accent:#00f5a0; --accent2:#00c6ff; --accent3:#ff6b35;
+    --text:#f0f0f8; --muted:#6b6b8a; --border:rgba(255,255,255,0.07);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;overflow-x:hidden;cursor:none;}
+  .cursor{width:12px;height:12px;background:var(--accent);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;transition:transform .15s ease;mix-blend-mode:difference;}
+  .cursor-trail{width:36px;height:36px;border:1.5px solid var(--accent);border-radius:50%;position:fixed;pointer-events:none;z-index:9998;transition:all .35s ease;opacity:.5;}
+  body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.4;}
+  .blob-wrap{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0;}
+  .blob{position:absolute;border-radius:50%;filter:blur(130px);opacity:.11;animation:floatBlob 20s ease-in-out infinite alternate;}
+  .blob1{width:650px;height:650px;background:#00f5a0;top:-200px;left:-150px;}
+  .blob2{width:500px;height:500px;background:#00c6ff;bottom:-200px;right:-100px;animation-delay:-7s;}
+  .blob3{width:400px;height:400px;background:#ff6b35;top:45%;left:45%;animation-delay:-14s;}
+  @keyframes floatBlob{0%{transform:translate(0,0) scale(1)}100%{transform:translate(60px,40px) scale(1.18)}}
+  .wrap{position:relative;z-index:2;}
+
+  /* NAV */
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 40px;display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(20px);border-bottom:1px solid var(--border);background:rgba(5,5,8,.78);}
+  .nav-logo{display:flex;flex-direction:column;line-height:1;}
+  .nav-logo span:first-child{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .nav-logo span:last-child{font-size:.7rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
+  .nav-cta{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000!important;padding:10px 22px;border-radius:30px;font-weight:700;text-decoration:none;font-size:.85rem;transition:transform .2s,box-shadow .2s;box-shadow:0 0 20px rgba(0,245,160,.2);display:flex;align-items:center;gap:8px;}
+  .nav-cta:hover{transform:scale(1.05);box-shadow:0 0 35px rgba(0,245,160,.4);}
+
+  /* HERO */
+  .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 40px 80px;}
+  .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(0,245,160,.08);border:1px solid rgba(0,245,160,.25);padding:8px 20px;border-radius:30px;font-size:.78rem;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:28px;animation:fadeUp .8s ease both;}
+  .hero-badge span{width:7px;height:7px;background:var(--accent);border-radius:50%;animation:pulse 1.5s ease infinite;display:inline-block;}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+  .hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(3.5rem,11vw,8.5rem);line-height:.9;letter-spacing:2px;animation:fadeUp .8s .15s ease both;}
+  .grad{background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3));background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:gradShift 4s linear infinite;}
+  @keyframes gradShift{0%{background-position:0%}100%{background-position:200%}}
+  .hero-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,5vw,3.5rem);letter-spacing:4px;color:var(--muted);animation:fadeUp .8s .25s ease both;margin-top:8px;}
+  .hero-sub{margin-top:20px;font-size:clamp(.95rem,2.3vw,1.2rem);color:var(--muted);max-width:600px;line-height:1.7;animation:fadeUp .8s .35s ease both;font-weight:300;}
+  .hero-tags{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:26px;animation:fadeUp .8s .45s ease both;}
+  .hero-tag{background:rgba(255,255,255,.04);border:1px solid var(--border);padding:6px 16px;border-radius:20px;font-size:.78rem;color:var(--muted);}
+  .hero-btns{display:flex;gap:16px;margin-top:40px;animation:fadeUp .8s .55s ease both;flex-wrap:wrap;justify-content:center;}
+  .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;font-weight:700;padding:15px 36px;border-radius:50px;text-decoration:none;font-size:.95rem;box-shadow:0 0 40px rgba(0,245,160,.3);transition:transform .25s,box-shadow .25s;}
+  .btn-primary:hover{transform:translateY(-3px);box-shadow:0 12px 50px rgba(0,245,160,.45);}
+  .btn-secondary{border:1px solid var(--border);color:var(--text);padding:15px 36px;border-radius:50px;text-decoration:none;font-size:.95rem;backdrop-filter:blur(10px);background:rgba(255,255,255,.04);transition:border-color .3s,background .3s;}
+  .btn-secondary:hover{border-color:var(--accent);background:rgba(0,245,160,.07);}
+
+  /* STATS */
+  .stats-bar{display:flex;justify-content:center;gap:60px;padding:36px 40px;margin:0 40px;border:1px solid var(--border);border-radius:20px;background:var(--surface);backdrop-filter:blur(20px);flex-wrap:wrap;}
+  .stat{text-align:center;}
+  .stat-num{font-family:'Bebas Neue',sans-serif;font-size:2.8rem;letter-spacing:2px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .stat-label{font-size:.78rem;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-top:4px;}
+
+  /* SECTION */
+  .section{padding:100px 40px;max-width:1240px;margin:0 auto;}
+  .section-tag{font-family:'Space Mono',monospace;font-size:.75rem;color:var(--accent);letter-spacing:3px;text-transform:uppercase;margin-bottom:16px;display:block;}
+  .section-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,6vw,4.5rem);letter-spacing:2px;line-height:1;margin-bottom:16px;}
+  .section-desc{color:var(--muted);font-size:1rem;max-width:540px;line-height:1.75;margin-bottom:60px;}
+
+  /* GRID */
+  .services-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:22px;}
+  .service-card{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:32px;position:relative;overflow:hidden;cursor:pointer;transition:transform .35s cubic-bezier(.23,1,.32,1),border-color .35s,box-shadow .35s;}
+  .service-card:hover{transform:translateY(-7px) scale(1.01);border-color:var(--ca,var(--accent));box-shadow:0 24px 60px var(--cs,rgba(0,245,160,.12));}
+  .card-num{font-family:'Bebas Neue',sans-serif;font-size:5rem;position:absolute;right:20px;top:14px;opacity:.035;color:#fff;pointer-events:none;user-select:none;}
+  .card-icon-wrap{width:60px;height:60px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin-bottom:24px;}
+  .card-tag{font-family:'Space Mono',monospace;font-size:.63rem;letter-spacing:2px;text-transform:uppercase;padding:5px 12px;border-radius:20px;display:inline-block;margin-bottom:12px;font-weight:700;}
+  .card-title{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:1.5px;margin-bottom:10px;line-height:1;}
+  .card-desc{color:var(--muted);font-size:.88rem;line-height:1.7;margin-bottom:24px;}
+  .card-features{list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:28px;}
+  .card-features li{display:flex;align-items:center;gap:10px;font-size:.85rem;color:rgba(240,240,248,.75);}
+  .card-features li::before{content:'';width:6px;height:6px;border-radius:50%;flex-shrink:0;background:var(--ca,var(--accent));}
+  .card-cta{display:inline-flex;align-items:center;gap:8px;font-size:.83rem;font-weight:600;color:var(--ca,var(--accent));cursor:pointer;transition:gap .25s;}
+  .card-cta:hover{gap:14px;}
+  .card-cta svg{width:17px;height:17px;}
+  .card-featured{background:linear-gradient(135deg,rgba(255,215,0,.04),rgba(255,215,0,.01));border-color:rgba(255,215,0,.2)!important;}
+  .badge-hot{position:absolute;top:18px;right:56px;background:linear-gradient(135deg,#ffd700,#ff9f00);color:#000;font-size:.58rem;font-weight:800;letter-spacing:1.5px;padding:4px 10px;border-radius:20px;text-transform:uppercase;}
+
+  /* PROCESSO */
+  .process-wrap{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+  .process-inner{max-width:1240px;margin:0 auto;padding:100px 40px;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+  .step{display:flex;gap:20px;padding:24px 0;border-bottom:1px solid var(--border);transition:padding-left .3s;}
+  .step:last-child{border-bottom:none;}
+  .step:hover{padding-left:10px;}
+  .step-num{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);width:42px;flex-shrink:0;line-height:1;}
+  .step-title{font-weight:600;font-size:1rem;margin-bottom:6px;}
+  .step-desc{color:var(--muted);font-size:.85rem;line-height:1.6;}
+  .process-visual{position:relative;height:380px;display:flex;align-items:center;justify-content:center;}
+  .ring{width:300px;height:300px;border-radius:50%;border:1px solid rgba(0,245,160,.12);position:absolute;animation:spin 22s linear infinite;}
+  .ring.r2{width:220px;height:220px;border-color:rgba(0,198,255,.15);animation-direction:reverse;animation-duration:15s;}
+  .ring.r3{width:140px;height:140px;border-color:rgba(255,107,53,.15);animation-duration:9s;}
+  @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+  .rdot{width:10px;height:10px;border-radius:50%;position:absolute;top:-5px;left:50%;transform:translateX(-50%);}
+  .rdot1{background:var(--accent);box-shadow:0 0 14px var(--accent);}
+  .rdot2{background:var(--accent2);box-shadow:0 0 14px var(--accent2);}
+  .rdot3{background:var(--accent3);box-shadow:0 0 14px var(--accent3);}
+  .center-orb{width:86px;height:86px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2.1rem;z-index:1;animation:glow 2.5s ease infinite alternate;}
+  @keyframes glow{from{box-shadow:0 0 40px rgba(0,245,160,.3)}to{box-shadow:0 0 90px rgba(0,245,160,.65)}}
+
+  /* CTA */
+  .cta-section{padding:110px 40px;text-align:center;position:relative;overflow:hidden;}
+  .cta-section::before{content:'';position:absolute;width:700px;height:700px;background:radial-gradient(circle,rgba(0,245,160,.07),transparent 70%);border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;}
+  .cta-section h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(3rem,8vw,6rem);letter-spacing:3px;line-height:1;margin-bottom:20px;}
+  .cta-section p{color:var(--muted);font-size:1.05rem;margin-bottom:44px;max-width:480px;margin-left:auto;margin-right:auto;}
+  .wpp-btn{display:inline-flex;align-items:center;gap:12px;background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;font-weight:700;padding:20px 50px;border-radius:60px;text-decoration:none;font-size:1.05rem;box-shadow:0 0 60px rgba(37,211,102,.3);transition:transform .3s,box-shadow .3s;}
+  .wpp-btn:hover{transform:translateY(-4px) scale(1.03);box-shadow:0 20px 70px rgba(37,211,102,.45);}
+  .wpp-btn svg{width:24px;height:24px;fill:#fff;flex-shrink:0;}
+
+  /* FOOTER */
+  footer{border-top:1px solid var(--border);padding:36px 40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+  footer .logo{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  footer p{color:var(--muted);font-size:.8rem;}
+
+  /* FLOAT WPP */
+  .float-wpp{position:fixed;bottom:100px;right:28px;z-index:200;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#25d366,#128c7e);display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:0 8px 30px rgba(37,211,102,.45);animation:floatAnim 3s ease-in-out infinite;}
+  .float-wpp:hover{transform:scale(1.12);}
+  @keyframes floatAnim{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+  /* REVEAL */
+  .reveal{opacity:0;transform:translateY(38px);transition:opacity .7s ease,transform .7s ease;}
+  .reveal.visible{opacity:1;transform:none;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+
+  /* ============================================================
+     MODAL
+  ============================================================ */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:500;display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;backdrop-filter:blur(12px);transition:opacity .35s;}
+  .modal-overlay.active{opacity:1;pointer-events:all;}
+  .modal{background:var(--card);border:1px solid var(--border);border-radius:28px;padding:44px;max-width:560px;width:100%;position:relative;transform:scale(.9) translateY(30px);transition:transform .4s cubic-bezier(.23,1,.32,1);max-height:90vh;overflow-y:auto;}
+  .modal-overlay.active .modal{transform:scale(1) translateY(0);}
+  .modal-close{position:absolute;top:16px;right:16px;width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;transition:background .2s,color .2s;}
+  .modal-close:hover{background:rgba(255,255,255,.07);color:var(--text);}
+  .modal-icon{font-size:2.8rem;margin-bottom:14px;}
+  .modal-title{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:2px;margin-bottom:12px;}
+  .modal-desc{color:var(--muted);line-height:1.75;margin-bottom:24px;font-size:.93rem;}
+  .modal-list{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:30px;}
+  .modal-list li{display:flex;gap:12px;align-items:flex-start;padding:13px 15px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:11px;font-size:.87rem;line-height:1.5;}
+  .modal-list li .ico{font-size:1.1rem;flex-shrink:0;}
+  .modal-wpp{display:flex;align-items:center;justify-content:center;gap:10px;background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;font-weight:700;padding:16px 28px;border-radius:50px;text-decoration:none;font-size:.97rem;width:100%;transition:transform .25s,box-shadow .25s;box-shadow:0 8px 30px rgba(37,211,102,.25);}
+  .modal-wpp:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(37,211,102,.4);}
+
+  /* ============================================================
+     AI CHAT WIDGET
+  ============================================================ */
+  #chatToggle{
+    position:fixed;bottom:28px;right:28px;z-index:300;
+    width:58px;height:58px;border-radius:50%;
+    background:linear-gradient(135deg,#a78bfa,#00c6ff);
+    border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 8px 30px rgba(167,139,250,.5);
+    transition:transform .25s,box-shadow .25s;
+    animation:chatPulse 3s ease-in-out infinite;
+  }
+  #chatToggle:hover{transform:scale(1.12);box-shadow:0 14px 45px rgba(167,139,250,.7);}
+  @keyframes chatPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+  #chatToggle svg{width:28px;height:28px;}
+
+  #chatWidget{
+    position:fixed;bottom:100px;right:28px;z-index:299;
+    width:370px;max-width:calc(100vw - 40px);
+    background:var(--card);border:1px solid rgba(167,139,250,.3);
+    border-radius:24px;overflow:hidden;
+    box-shadow:0 30px 80px rgba(0,0,0,.7),0 0 0 1px rgba(167,139,250,.1);
+    display:flex;flex-direction:column;
+    transform:scale(.9) translateY(20px);opacity:0;pointer-events:none;
+    transition:transform .4s cubic-bezier(.23,1,.32,1),opacity .4s;
+    max-height:520px;
+  }
+  #chatWidget.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all;}
+
+  .chat-header{
+    background:linear-gradient(135deg,rgba(167,139,250,.15),rgba(0,198,255,.1));
+    border-bottom:1px solid var(--border);
+    padding:18px 20px;display:flex;align-items:center;gap:12px;
+    flex-shrink:0;
+  }
+  .chat-avatar{
+    width:42px;height:42px;border-radius:50%;
+    background:linear-gradient(135deg,#a78bfa,#00c6ff);
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.3rem;flex-shrink:0;
+    box-shadow:0 0 20px rgba(167,139,250,.4);
+    animation:avatarGlow 2s ease infinite alternate;
+  }
+  @keyframes avatarGlow{from{box-shadow:0 0 12px rgba(167,139,250,.3)}to{box-shadow:0 0 28px rgba(167,139,250,.6)}}
+  .chat-info{}
+  .chat-name{font-weight:700;font-size:.95rem;}
+  .chat-status{font-size:.72rem;color:#4ade80;display:flex;align-items:center;gap:5px;margin-top:2px;}
+  .chat-status::before{content:'';width:6px;height:6px;background:#4ade80;border-radius:50%;display:inline-block;animation:pulse 1.5s infinite;}
+  .chat-close-btn{margin-left:auto;background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:1.2rem;padding:4px;transition:color .2s;}
+  .chat-close-btn:hover{color:var(--text);}
+
+  .chat-messages{
+    flex:1;overflow-y:auto;padding:18px 16px;
+    display:flex;flex-direction:column;gap:12px;
+    scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.1) transparent;
+  }
+  .chat-messages::-webkit-scrollbar{width:4px;}
+  .chat-messages::-webkit-scrollbar-track{background:transparent;}
+  .chat-messages::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px;}
+
+  .msg{display:flex;gap:8px;animation:msgIn .3s ease both;}
+  @keyframes msgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .msg.user{flex-direction:row-reverse;}
+  .msg-bubble{
+    max-width:80%;padding:11px 15px;border-radius:18px;
+    font-size:.86rem;line-height:1.55;word-break:break-word;
+  }
+  .msg.bot .msg-bubble{background:rgba(255,255,255,.06);border:1px solid var(--border);border-bottom-left-radius:4px;color:var(--text);}
+  .msg.user .msg-bubble{background:linear-gradient(135deg,#a78bfa,#7c3aed);color:#fff;border-bottom-right-radius:4px;}
+  .msg-avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;margin-top:2px;}
+  .msg.bot .msg-avatar{background:linear-gradient(135deg,#a78bfa,#00c6ff);}
+  .msg.user .msg-avatar{background:linear-gradient(135deg,#374151,#1f2937);}
+
+  .typing{display:flex;align-items:center;gap:5px;padding:12px 15px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:18px;border-bottom-left-radius:4px;width:fit-content;}
+  .typing span{width:7px;height:7px;background:var(--muted);border-radius:50%;animation:typingDot .9s ease infinite;}
+  .typing span:nth-child(2){animation-delay:.15s;}
+  .typing span:nth-child(3){animation-delay:.3s;}
+  @keyframes typingDot{0%,80%,100%{transform:scale(.7);opacity:.4}40%{transform:scale(1);opacity:1}}
+
+  .chat-footer{padding:14px 14px;border-top:1px solid var(--border);display:flex;gap:10px;flex-shrink:0;background:rgba(5,5,8,.5);}
+  #chatInput{
+    flex:1;background:rgba(255,255,255,.05);border:1px solid var(--border);
+    border-radius:24px;padding:11px 16px;color:var(--text);font-family:'Outfit',sans-serif;
+    font-size:.87rem;outline:none;transition:border-color .25s;resize:none;
+    max-height:100px;min-height:44px;line-height:1.4;
+  }
+  #chatInput:focus{border-color:rgba(167,139,250,.5);}
+  #chatInput::placeholder{color:var(--muted);}
+  #chatSend{
+    width:44px;height:44px;border-radius:50%;flex-shrink:0;
+    background:linear-gradient(135deg,#a78bfa,#00c6ff);
+    border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
+    transition:transform .2s,box-shadow .2s;box-shadow:0 4px 15px rgba(167,139,250,.3);
+    align-self:flex-end;
+  }
+  #chatSend:hover{transform:scale(1.08);box-shadow:0 6px 22px rgba(167,139,250,.5);}
+  #chatSend svg{width:18px;height:18px;fill:#fff;}
+
+  /* suggestion chips */
+  .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px;}
+  .chip{background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.25);color:#a78bfa;border-radius:16px;padding:5px 13px;font-size:.75rem;cursor:pointer;transition:background .2s,transform .15s;}
+  .chip:hover{background:rgba(167,139,250,.22);transform:scale(1.03);}
+
+  /* wpp shortcut in chat */
+  .chat-wpp-btn{display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;border-radius:14px;padding:10px 14px;text-decoration:none;font-size:.82rem;font-weight:600;margin-top:8px;width:fit-content;transition:transform .2s;}
+  .chat-wpp-btn:hover{transform:scale(1.03);}
+  .chat-wpp-btn svg{width:16px;height:16px;fill:#fff;flex-shrink:0;}
+
+  /* MOBILE */
+  @media(max-width:768px){
+    nav{padding:12px 18px;}
+    .hero{padding:100px 20px 60px;}
+    .stats-bar{margin:0 18px;gap:24px;}
+    .section{padding:60px 20px;}
+    .services-grid{grid-template-columns:1fr;}
+    .process-inner{grid-template-columns:1fr;gap:40px;padding:60px 20px;}
+    .process-visual{height:240px;}
+    .modal{padding:26px 18px;}
+    footer{flex-direction:column;text-align:center;}
+    body{cursor:auto;}
+    .cursor,.cursor-trail{display:none;}
+    #chatWidget{width:calc(100vw - 40px);right:20px;bottom:90px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-trail" id="cursorTrail"></div>
+
+<div class="blob-wrap">
+  <div class="blob blob1"></div><div class="blob blob2"></div><div class="blob blob3"></div>
+</div>
+
+<!-- Float WhatsApp -->
+<a class="float-wpp" href="https://wa.me/5567999016886?text=Olá%20Wesley!%20Vi%20seu%20catálogo%20e%20quero%20um%20orçamento!" target="_blank" title="WhatsApp">
+  <svg viewBox="0 0 24 24" width="27" height="27" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<!-- AI Chat Toggle -->
+<button id="chatToggle" title="Assistente IA — Descubra seu serviço ideal" onclick="toggleChat()">
+  <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+    <circle cx="9" cy="10" r="1" fill="#fff" stroke="none"/>
+    <circle cx="12" cy="10" r="1" fill="#fff" stroke="none"/>
+    <circle cx="15" cy="10" r="1" fill="#fff" stroke="none"/>
+  </svg>
+</button>
+
+<!-- AI Chat Widget -->
+<div id="chatWidget">
+  <div class="chat-header">
+    <div class="chat-avatar">🤖</div>
+    <div class="chat-info">
+      <div class="chat-name">Assistente do Wesley</div>
+      <div class="chat-status">Online agora</div>
+    </div>
+    <button class="chat-close-btn" onclick="toggleChat()">✕</button>
+  </div>
+  <div class="chat-messages" id="chatMessages"></div>
+  <div class="chat-footer">
+    <textarea id="chatInput" placeholder="Conta sua dificuldade ou o que precisa..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+    <button id="chatSend" onclick="sendMessage()">
+      <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <span>WESLEY HENRIQUE</span>
+    <span>Tecnologia & Design Digital</span>
+  </div>
+  <a href="https://wa.me/5567999016886?text=Olá%20Wesley!%20Quero%20um%20orçamento!" target="_blank" class="nav-cta">
+    📲 Solicitar Orçamento
+  </a>
+</nav>
+
+<div class="wrap">
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge"><span></span> Soluções digitais completas para o seu negócio</div>
+  <h1>TECNOLOGIA<br><span class="grad">&amp; DESIGN</span></h1>
+  <div class="hero-name">por Wesley Henrique</div>
+  <p class="hero-sub">Sites, cardápio digital, Google Maps, logos, cartazes, vídeos, IA e muito mais. Tudo que o seu negócio precisa para crescer no digital.</p>
+  <div class="hero-tags">
+    <span class="hero-tag">🌐 Sites</span>
+    <span class="hero-tag">📍 Google Maps</span>
+    <span class="hero-tag">🍽️ Cardápio Digital</span>
+    <span class="hero-tag">🎨 Logos & Cartazes</span>
+    <span class="hero-tag">🤖 Serviços com IA</span>
+    <span class="hero-tag">🎬 Vídeos</span>
+  </div>
+  <div class="hero-btns">
+    <a href="#servicos" class="btn-primary">Ver Serviços</a>
+    <a href="https://wa.me/5567999016886" target="_blank" class="btn-secondary">Falar com Wesley</a>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar reveal">
+  <div class="stat"><div class="stat-num" data-count="100" data-suffix="+">0+</div><div class="stat-label">Clientes Atendidos</div></div>
+  <div class="stat"><div class="stat-num" data-count="8" data-suffix="+">0+</div><div class="stat-label">Serviços Oferecidos</div></div>
+  <div class="stat"><div class="stat-num" data-count="24" data-suffix="h">0h</div><div class="stat-label">Suporte Rápido</div></div>
+  <div class="stat"><div class="stat-num" data-count="100" data-suffix="%">0%</div><div class="stat-label">Comprometimento</div></div>
+</div>
+
+<!-- SERVIÇOS -->
+<section id="servicos" class="section">
+  <span class="section-tag reveal">// O que Wesley faz</span>
+  <h2 class="section-title reveal">MEUS <span style="color:var(--accent)">SERVIÇOS</span></h2>
+  <p class="section-desc reveal">Do cartaz ao site, do Google Maps ao vídeo com IA — soluções completas para destacar o seu negócio no digital.</p>
+
+  <div class="services-grid">
+
+    <div class="service-card reveal" style="--ca:#4ade80;--cs:rgba(74,222,128,.14)" onclick="openModal('maps')">
+      <div class="card-num">01</div>
+      <div class="card-icon-wrap" style="background:rgba(74,222,128,.1)">📍</div>
+      <div class="card-tag" style="background:rgba(74,222,128,.1);color:#4ade80">Google Maps</div>
+      <div class="card-title">CADASTRO NO GOOGLE</div>
+      <p class="card-desc">Cadastro completo da sua empresa no Google Maps para seus clientes te encontrarem facilmente nas buscas locais.</p>
+      <ul class="card-features"><li>Perfil completo no Google Meu Negócio</li><li>Fotos, horários e informações otimizadas</li><li>Aparecer no "perto de mim"</li><li>Mapa integrado ao site</li></ul>
+      <div class="card-cta" style="color:#4ade80">Solicitar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+    </div>
+
+    <div class="service-card reveal" style="--ca:#f472b6;--cs:rgba(244,114,182,.14)" onclick="openModal('design')">
+      <div class="card-num">02</div>
+      <div class="card-icon-wrap" style="background:rgba(244,114,182,.1)">🎨</div>
+      <div class="card-tag" style="background:rgba(244,114,182,.1);color:#f472b6">Design Gráfico</div>
+      <div class="card-title">CARTAZ & LOGO</div>
+      <p class="card-desc">Identidade visual completa, logos exclusivos e materiais gráficos que fazem sua marca ser lembrada.</p>
+      <ul class="card-features"><li>Logo profissional e exclusivo</li><li>Cartazes, panfletos e flyers</li><li>Artes para redes sociais</li><li>Identidade visual completa</li></ul>
+      <div class="card-cta" style="color:#f472b6">Solicitar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+    </div>
+
+    <div class="service-card reveal" style="--ca:#00f5a0;--cs:rgba(0,245,160,.14)" onclick="openModal('site')">
+      <div class="card-num">03</div>
+      <div class="card-icon-wrap" style="background:rgba(0,245,160,.1)">🌐</div>
+      <div class="card-tag" style="background:rgba(0,245,160,.1);color:#00f5a0">Criação de Site</div>
+      <div class="card-title">SITE PROFISSIONAL</div>
+      <p class="card-desc">Sites modernos, rápidos e responsivos que representam sua empresa e captam clientes 24h por dia.</p>
+      <ul class="card-features"><li>Design exclusivo e personalizado</li><li>100% responsivo (celular, tablet, PC)</li><li>Otimizado para o Google (SEO)</li><li>Formulário de contato e WhatsApp</li></ul>
+      <div class="card-cta" style="color:#00f5a0">Solicitar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+    </div>
+
+    <div class="service-card reveal" style="--ca:#fb923c;--cs:rgba(251,146,60,.14)" onclick="openModal('cardapio')">
+      <div class="card-num">04</div>
+      <div class="card-icon-wrap" style="background:rgba(251,146,60,.1)">🍽️</div>
+      <div class="card-tag" style="background:rgba(251,146,60,.1);color:#fb923c">Restaurantes & Bares</div>
+      <div class="card-title">CARDÁPIO DIGITAL</div>
+      <p class="card-desc">Cardápio moderno via QR Code para restaurantes e bares. Sem papel, sem impressão e sempre atualizado.</p>
+      <ul class="card-features"><li>Acesso pelo celular via QR Code</li><li>Fotos dos pratos e preços</li><li>Atualização a qualquer hora</li><li>Integração com WhatsApp</li></ul>
+      <div class="card-cta" style="color:#fb923c">Solicitar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+    </div>
+
+    <div class="service-card reveal" style="--ca:#a78bfa;--cs:rgba(167,139,250,.14)" onclick="openModal('ia')">
+      <div class="card-num">05</div>
+      <div class="card-icon-wrap" style="background:rgba(167,139,250,.1)">🤖</div>
+      <div class="card-tag" style="background:rgba(167,139,250,.1);color:#a78bfa">Inteligência Artificial</div>
+      <div class="card-title">SERVIÇOS COM IA</div>
+      <p class="card-desc">Uso as ferramentas de IA mais avançadas para criar conteúdo, imagens, vídeos e automatizar seu negócio.</p>
+      <ul class="card-features"><li>Geração de imagens com IA</li><li>Textos e copywriting com IA</li><li>Chatbot de atendimento automático</li><li>Vídeos e dublagem com IA</li></ul>
+      <div class="card-cta" style="color:#a78bfa">Solicitar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+    </div>
+
+    <div class="service-card reveal" style="--ca:#00c6ff;--cs:rgba(0,198,255,.14)" onclick="openModal('video')">
+      <div class="card-num">06</div>
+      <div class="card-icon-wrap" style="background:rgba(0,198,255,.1)">🎬</div>
+      <div class="card-tag" style="background:rgba(0,198,255,.1);color:#00c6ff">Imagem & Vídeo</div>
+      <div class="card-title">VÍDEO & VISUAL</div>
+      <p class="card-desc">Edição e produção de vídeos profissionais para redes sociais, anúncios e apresentações da sua empresa.</p>
+      <ul class="card-features"><li>Edição de vídeo profissional</li><li>Reels e vídeos para redes sociais</li><li>Vídeos institucionais e de produto</li><li>Animações e motion graphics</li></ul>
+      <div class="card-cta" style="color:#00c6ff">Solicitar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+    </div>
+
+    <div class="service-card reveal" style="--ca:#38bdf8;--cs:rgba(56,189,248,.14)" onclick="openModal('tech')">
+      <div class="card-num">07</div>
+      <div class="card-icon-wrap" style="background:rgba(56,189,248,.1)">⚙️</div>
+      <div class="card-tag" style="background:rgba(56,189,248,.1);color:#38bdf8">Tecnologia</div>
+      <div class="card-title">SOLUÇÕES TECH</div>
+      <p class="card-desc">Sistemas, automações e soluções tecnológicas diversas para modernizar e facilitar o seu negócio.</p>
+      <ul class="card-features"><li>Sistemas de cadastro e controle</li><li>Automações de tarefas</li><li>Integração entre plataformas</li><li>Suporte e consultoria em TI</li></ul>
+      <div class="card-cta" style="color:#38bdf8">Solicitar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+    </div>
+
+    <div class="service-card card-featured reveal" style="--ca:#ffd700;--cs:rgba(255,215,0,.18)" onclick="openModal('pacote')">
+      <div class="badge-hot">⭐ Mais Popular</div>
+      <div class="card-num">★</div>
+      <div class="card-icon-wrap" style="background:rgba(255,215,0,.1)">🚀</div>
+      <div class="card-tag" style="background:rgba(255,215,0,.12);color:#ffd700">Pacote Especial</div>
+      <div class="card-title">COMBO COMPLETO</div>
+      <p class="card-desc">Todos os serviços juntos com preço especial. A solução definitiva para dominar o digital de vez.</p>
+      <ul class="card-features"><li>Site + Cardápio Digital</li><li>Google Maps + Logo + Cartaz</li><li>Vídeo + IA + Artes sociais</li><li>Suporte prioritário incluso</li></ul>
+      <div class="card-cta" style="color:#ffd700">Solicitar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PROCESSO -->
+<div class="process-wrap">
+  <div class="process-inner">
+    <div>
+      <span class="section-tag reveal">// Como funciona</span>
+      <h2 class="section-title reveal">SIMPLES <span style="color:var(--accent2)">ASSIM</span></h2>
+      <p class="section-desc reveal">Processo rápido e transparente. Sem enrolação, sem surpresas.</p>
+      <div>
+        <div class="step reveal"><div class="step-num">01</div><div><div class="step-title">Me chama no WhatsApp</div><div class="step-desc">Me conta o que precisa. Em poucos minutos entendo o que é necessário para o seu negócio.</div></div></div>
+        <div class="step reveal"><div class="step-num">02</div><div><div class="step-title">Orçamento na hora</div><div class="step-desc">Envio proposta com prazo e valor claro. Sem surpresas, sem letras miúdas.</div></div></div>
+        <div class="step reveal"><div class="step-num">03</div><div><div class="step-title">Desenvolvimento</div><div class="step-desc">Coloco a mão na massa e te mantenho informado em cada etapa do progresso.</div></div></div>
+        <div class="step reveal"><div class="step-num">04</div><div><div class="step-title">Entrega + Suporte</div><div class="step-desc">Entrego tudo funcionando e dou suporte para você aproveitar ao máximo.</div></div></div>
+      </div>
+    </div>
+    <div class="process-visual reveal">
+      <div class="ring"><div class="rdot rdot1"></div></div>
+      <div class="ring r2"><div class="rdot rdot2"></div></div>
+      <div class="ring r3"><div class="rdot rdot3"></div></div>
+      <div class="center-orb">🚀</div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<section id="contato" class="cta-section">
+  <span class="section-tag reveal" style="display:block;text-align:center;margin-bottom:16px">// Bora começar?</span>
+  <h2 class="reveal">VAMOS<br><span class="grad">TRABALHAR</span><br>JUNTOS?</h2>
+  <p class="reveal">Me chama agora no WhatsApp e receba um orçamento gratuito. Atendo rápido!</p>
+  <a href="https://wa.me/5567999016886?text=Olá%20Wesley!%20Vi%20seu%20catálogo%20de%20serviços%20e%20gostaria%20de%20um%20orçamento!" target="_blank" class="wpp-btn reveal">
+    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    Chamar Wesley — (67) 99901-6886
+  </a>
+</section>
+
+<footer>
+  <div class="logo">WESLEY HENRIQUE</div>
+  <p>© 2025 — Wesley Henrique Tecnologia & Design</p>
+  <p>(67) 99901-6886</p>
+</footer>
+
+</div><!-- /wrap -->
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModalBtn()">✕</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<script>
+/* ============================
+   CURSOR
+============================ */
+const cur=document.getElementById('cursor'),tr=document.getElementById('cursorTrail');
+let mx=0,my=0,tx=0,ty=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx-6+'px';cur.style.top=my-6+'px';});
+setInterval(()=>{tx+=(mx-tx)*.12;ty+=(my-ty)*.12;tr.style.left=tx-18+'px';tr.style.top=ty-18+'px';},16);
+document.querySelectorAll('a,button,.service-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.transform='scale(2.5)';tr.style.transform='scale(1.4)';});
+  el.addEventListener('mouseleave',()=>{cur.style.transform='scale(1)';tr.style.transform='scale(1)';});
+});
+
+/* ============================
+   SCROLL REVEAL
+============================ */
+const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');});},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+/* ============================
+   COUNT UP
+============================ */
+function countUp(el,v,s){let c=0;const t=setInterval(()=>{c=Math.min(c+v/112,v);el.textContent=Math.floor(c)+s;if(c>=v)clearInterval(t);},16);}
+const so=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){document.querySelectorAll('[data-count]').forEach(el=>countUp(el,+el.dataset.count,el.dataset.suffix));so.disconnect();}});},{threshold:.5});
+const sb=document.querySelector('.stats-bar');if(sb)so.observe(sb);
+
+/* ============================
+   MODAL DATA
+============================ */
+const modals={
+  maps:{icon:'📍',tag:'Google Maps',color:'#4ade80',title:'CADASTRO NO GOOGLE',desc:'Cadastro e otimização completa da sua empresa no Google Maps e Google Meu Negócio. Quando alguém pesquisar um serviço como o seu perto de onde está, sua empresa aparece em destaque!',items:[{i:'🗺️',t:'Criação e otimização do perfil no Google Meu Negócio'},{i:'📸',t:'Fotos, horários e contatos completos'},{i:'📌',t:'Mapa interativo integrado ao site'},{i:'⭐',t:'Estratégias para mais avaliações positivas'},{i:'🔍',t:'Aparecer nas buscas locais "perto de mim"'},{i:'📊',t:'Análise de desempenho do perfil'}]},
+  design:{icon:'🎨',tag:'Cartaz e Logo',color:'#f472b6',title:'CARTAZ, LOGO & DESIGN',desc:'Criação de identidade visual completa. Logo exclusivo, cartazes impactantes e todo material gráfico que sua empresa precisa para se destacar e ser lembrada.',items:[{i:'✨',t:'Logo profissional exclusivo e memorável'},{i:'🖼️',t:'Cartazes, panfletos e flyers para impressão'},{i:'📱',t:'Posts, stories e capas para redes sociais'},{i:'🏷️',t:'Identidade visual completa (cores, fontes, padrões)'},{i:'🏪',t:'Material de PDV e embalagens'},{i:'🖨️',t:'Arquivos em alta resolução prontos para impressão'}]},
+  site:{icon:'🌐',tag:'Criação de Site',color:'#00f5a0',title:'SITE PROFISSIONAL',desc:'Sites modernos, rápidos e responsivos. Seja institucional, portfólio, landing page ou loja virtual — entrego um site que representa seu negócio e converte visitantes em clientes.',items:[{i:'🎨',t:'Design moderno e exclusivo para a sua marca'},{i:'📱',t:'100% responsivo — perfeito no celular, tablet e PC'},{i:'🔍',t:'Otimizado para o Google (SEO)'},{i:'⚡',t:'Carregamento ultrarrápido'},{i:'📬',t:'Formulários de contato e links para WhatsApp'},{i:'🔒',t:'Hospedagem e segurança configuradas'}]},
+  cardapio:{icon:'🍽️',tag:'Cardápio Digital',color:'#fb923c',title:'CARDÁPIO DIGITAL',desc:'Cardápio digital para restaurantes, bares e lanchonetes. O cliente escaneia o QR Code e vê tudo pelo celular — sem papel, sem custo de impressão e sempre atualizado.',items:[{i:'📲',t:'Acesso via QR Code direto pelo celular'},{i:'🍕',t:'Fotos dos pratos com descrição e preços'},{i:'✏️',t:'Atualização de preços a qualquer momento'},{i:'💬',t:'Pedidos direto pelo WhatsApp'},{i:'🎨',t:'Visual personalizado com a identidade da sua marca'},{i:'♾️',t:'Sem limite de itens ou categorias'}]},
+  ia:{icon:'🤖',tag:'Serviços com IA',color:'#a78bfa',title:'SERVIÇOS COM IA',desc:'Uso as melhores ferramentas de Inteligência Artificial para criar conteúdo incrível, automatizar processos e entregar resultados extraordinários para o seu negócio.',items:[{i:'🖼️',t:'Geração de imagens profissionais com IA'},{i:'✍️',t:'Textos, posts e copywriting automático'},{i:'🤖',t:'Chatbot de atendimento automático para WhatsApp'},{i:'🎬',t:'Geração e edição de vídeos com IA'},{i:'🔊',t:'Dublagem e voice-over automáticos'},{i:'📊',t:'Automação de processos repetitivos'}]},
+  video:{icon:'🎬',tag:'Vídeo e Imagem',color:'#00c6ff',title:'VÍDEO & IMAGEM VISUAL',desc:'Produção e edição de conteúdo visual de alta qualidade para destacar seu negócio. Vídeos que engajam, convertem e fazem o cliente querer comprar de você.',items:[{i:'✂️',t:'Edição de vídeo profissional'},{i:'📱',t:'Reels, Shorts e TikToks'},{i:'🏢',t:'Vídeo institucional da empresa'},{i:'🛍️',t:'Vídeos de produto para anúncios'},{i:'✨',t:'Animações e motion graphics'},{i:'🎞️',t:'Tratamento de cor profissional'}]},
+  tech:{icon:'⚙️',tag:'Soluções Tech',color:'#38bdf8',title:'SOLUÇÕES EM TECNOLOGIA',desc:'Soluções tecnológicas diversas para modernizar e escalar o seu negócio. Desde sistemas simples até automações — resolvo o seu problema com tecnologia.',items:[{i:'🗄️',t:'Sistemas de cadastro de clientes e produtos'},{i:'📊',t:'Painéis e relatórios de desempenho'},{i:'🔄',t:'Automações para tarefas repetitivas'},{i:'🔗',t:'Integração entre plataformas'},{i:'💻',t:'Consultoria em tecnologia'},{i:'🛠️',t:'Suporte técnico e manutenção'}]},
+  pacote:{icon:'🚀',tag:'Combo Completo',color:'#ffd700',title:'COMBO COMPLETO',desc:'A solução mais completa para dominar o digital de uma vez. Todos os serviços juntos com preço especial, atendimento prioritário e suporte dedicado do Wesley.',items:[{i:'🌐',t:'Site profissional completo'},{i:'🍽️',t:'Cardápio Digital com QR Code'},{i:'📍',t:'Google Maps otimizado'},{i:'🎨',t:'Logo + Cartaz + Kit artes sociais'},{i:'🎬',t:'Vídeo institucional + edição'},{i:'🤖',t:'IA + Suporte prioritário'}]}
+};
+
+function wppLink(tag,msg=''){
+  const txt=msg||`Olá Wesley! Tenho interesse em ${tag} e gostaria de um orçamento!`;
+  return `https://wa.me/5567999016886?text=${encodeURIComponent(txt)}`;
+}
+
+function openModal(k){
+  const d=modals[k];
+  document.getElementById('modalContent').innerHTML=`
+    <div style="font-family:'Space Mono',monospace;font-size:.68rem;letter-spacing:2px;text-transform:uppercase;color:${d.color};margin-bottom:10px;">${d.tag}</div>
+    <div class="modal-icon">${d.icon}</div>
+    <div class="modal-title">${d.title}</div>
+    <p class="modal-desc">${d.desc}</p>
+    <ul class="modal-list">${d.items.map(x=>`<li><span class="ico">${x.i}</span><span>${x.t}</span></li>`).join('')}</ul>
+    <a href="${wppLink(d.tag)}" target="_blank" class="modal-wpp">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Falar com Wesley sobre ${d.tag}
+    </a>`;
+  document.getElementById('modalOverlay').classList.add('active');
+  document.body.style.overflow='hidden';
+}
+function closeModal(e){if(e.target===document.getElementById('modalOverlay'))closeModalBtn();}
+function closeModalBtn(){document.getElementById('modalOverlay').classList.remove('active');document.body.style.overflow='';}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModalBtn();});
+
+/* ============================
+   AI CHAT
+============================ */
+let chatOpen=false;
+let chatHistory=[];
+let isLoading=false;
+
+const SYSTEM_PROMPT=`Você é o assistente virtual do Wesley Henrique, especialista em tecnologia e design digital. Seu papel é conversar com potenciais clientes, entender a dificuldade ou necessidade deles e recomendar qual dos serviços do Wesley melhor se encaixa.
+
+Serviços disponíveis:
+1. 📍 Cadastro no Google Maps — para empresas que precisam aparecer nas buscas locais e no Google Meu Negócio
+2. 🎨 Cartaz & Logo — para quem precisa de identidade visual, logotipo, panfletos, artes para redes sociais
+3. 🌐 Site Profissional — para quem precisa de presença online, site institucional, landing page ou portfólio
+4. 🍽️ Cardápio Digital — para restaurantes, bares, lanchonetes que querem cardápio via QR Code
+5. 🤖 Serviços com IA — para quem quer criação de conteúdo, imagens, chatbot, automações com inteligência artificial
+6. 🎬 Vídeo & Imagem Visual — para quem precisa de edição de vídeo, reels, vídeos institucionais, motion graphics
+7. ⚙️ Soluções Tech — para quem precisa de sistemas, automações, cadastros, integração de plataformas
+8. 🚀 Combo Completo — para quem quer vários serviços juntos com melhor custo-benefício
+
+Regras:
+- Seja simpático, direto e informal (tutear o cliente)
+- Faça 1 pergunta por vez para entender melhor a necessidade
+- Quando entender a necessidade, recomende o serviço mais adequado com emoji
+- Ao final da recomendação, sempre sugira entrar em contato com o Wesley no WhatsApp
+- Respostas curtas e objetivas (máx 3 parágrafos)
+- Se o cliente não souber o que quer, ajude com perguntas simples sobre o tipo de negócio dele
+- Nunca invente preços — diga que o Wesley passa o orçamento no WhatsApp
+- Responda sempre em português brasileiro`;
+
+function toggleChat(){
+  chatOpen=!chatOpen;
+  document.getElementById('chatWidget').classList.toggle('open',chatOpen);
+  if(chatOpen && chatHistory.length===0){
+    setTimeout(()=>addBotMessage(
+      'Oi! 👋 Sou o assistente do **Wesley Henrique**.\n\nMe conta qual é a sua dificuldade ou o que você precisa para o seu negócio — vou te indicar o serviço ideal! 😊',
+      [{label:'Quero aparecer no Google',action:()=>userChip('Quero que minha empresa apareça no Google')},{label:'Preciso de um site',action:()=>userChip('Preciso de um site para minha empresa')},{label:'Tenho um restaurante',action:()=>userChip('Tenho um restaurante ou bar')},{label:'Preciso de logo/cartaz',action:()=>userChip('Preciso de logo ou cartaz')}]
+    ),400);
+  }
+}
+
+function userChip(txt){
+  document.getElementById('chatInput').value=txt;
+  sendMessage();
+}
+
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px';}
+function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}}
+
+function addBotMessage(text,chips=[]){
+  const msgs=document.getElementById('chatMessages');
+  // remove typing if present
+  const typing=msgs.querySelector('.typing-wrap');
+  if(typing)typing.remove();
+
+  const html=text
+    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\n/g,'<br>');
+
+  const chipsHtml=chips.length?`<div class="chips">${chips.map((c,i)=>`<button class="chip" onclick="window._chips[${i}]()">${c.label}</button>`).join('')}</div>`:'';
+  window._chips=chips.map(c=>c.action);
+
+  const div=document.createElement('div');
+  div.className='msg bot';
+  div.innerHTML=`<div class="msg-avatar">🤖</div><div><div class="msg-bubble">${html}</div>${chipsHtml}</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop=msgs.scrollHeight;
+}
+
+function addUserMessage(text){
+  const msgs=document.getElementById('chatMessages');
+  const div=document.createElement('div');
+  div.className='msg user';
+  div.innerHTML=`<div class="msg-avatar">👤</div><div class="msg-bubble">${text.replace(/\n/g,'<br>')}</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop=msgs.scrollHeight;
+}
+
+function showTyping(){
+  const msgs=document.getElementById('chatMessages');
+  const div=document.createElement('div');
+  div.className='msg bot typing-wrap';
+  div.innerHTML=`<div class="msg-avatar">🤖</div><div class="typing"><span></span><span></span><span></span></div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop=msgs.scrollHeight;
+}
+
+async function sendMessage(){
+  if(isLoading)return;
+  const input=document.getElementById('chatInput');
+  const text=input.value.trim();
+  if(!text)return;
+
+  input.value='';
+  input.style.height='auto';
+  addUserMessage(text);
+  chatHistory.push({role:'user',content:text});
+  isLoading=true;
+  showTyping();
+
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:600,
+        system:SYSTEM_PROMPT,
+        messages:chatHistory
+      })
+    });
+    const data=await res.json();
+    const reply=data.content?.[0]?.text||'Desculpe, tive um probleminha. Tenta de novo! 😅';
+    chatHistory.push({role:'assistant',content:reply});
+
+    // detect service mention to offer wpp shortcut
+    const serviceMap={
+      'google':'Google Maps',
+      'maps':'Google Maps',
+      'mapa':'Google Maps',
+      'site':'Site Profissional',
+      'website':'Site Profissional',
+      'cardápio':'Cardápio Digital',
+      'cardapio':'Cardápio Digital',
+      'restaurante':'Cardápio Digital',
+      'logo':'Cartaz e Logo',
+      'cartaz':'Cartaz e Logo',
+      'design':'Cartaz e Logo',
+      'vídeo':'Vídeo e Imagem',
+      'video':'Vídeo e Imagem',
+      'reel':'Vídeo e Imagem',
+      'ia':'Serviços com IA',
+      'inteligência':'Serviços com IA',
+      'automação':'Soluções Tech',
+      'sistema':'Soluções Tech',
+      'combo':'Combo Completo',
+      'pacote':'Combo Completo',
+    };
+    let detectedService='';
+    const replyLower=reply.toLowerCase();
+    for(const[kw,sv] of Object.entries(serviceMap)){if(replyLower.includes(kw)){detectedService=sv;break;}}
+
+    const chips=[];
+    if(detectedService){
+      chips.push({
+        label:`💬 Falar com Wesley sobre ${detectedService}`,
+        action:()=>window.open(wppLink(detectedService,`Olá Wesley! O assistente indicou o serviço de ${detectedService} para mim. Quero saber mais!`),'_blank')
+      });
+    }
+    chips.push({label:'📞 Chamar Wesley agora',action:()=>window.open('https://wa.me/5567999016886?text=Olá%20Wesley!%20Preciso%20de%20ajuda%20e%20quero%20conversar%20sobre%20seus%20serviços!','_blank')});
+
+    addBotMessage(reply,chips);
+  }catch(err){
+    addBotMessage('Ops! Tive um problema técnico 😅 Mas pode chamar o Wesley diretamente no WhatsApp!',[{label:'📞 Chamar Wesley',action:()=>window.open('https://wa.me/5567999016886','_blank')}]);
+  }
+  isLoading=false;
+}
+</script>
+</body>
+</html>
